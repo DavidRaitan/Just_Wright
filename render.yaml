@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: just-wright
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips "*"
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_PATH
+        value: /var/data/just_wright.db
+      - key: FREE_DAILY_LIMIT
+        value: "50"
+      - key: AUTH_DAILY_LIMIT
+        value: "200"
+    disk:
+      name: just-wright-data
+      mountPath: /var/data
+      sizeGB: 1
